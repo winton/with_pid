@@ -15,7 +15,7 @@ sudo gem install with_pid
 Ruby script
 -----------
 
-<code>/data/my_app/current/bin/dj</code>:
+### /data/my_app/current/bin/dj
 
 <pre>
 #!/usr/bin/env ruby
