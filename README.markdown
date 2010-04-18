@@ -1,36 +1,49 @@
-GemTemplate
-===========
+With PID
+========
 
-A gem template for new projects.
+The simple way to create and monitor a Ruby daemon.
+
+Works by generating a bash file and executing it instead of doing any Ruby process tricks.
 
 Requirements
 ------------
 
 <pre>
-sudo gem install stencil
+sudo gem install with_pid
 </pre>
 
-Setup the template
-------------------
+Ruby script
+-----------
 
-You only have to do this once.
+<code>/data/my_app/current/bin/dj</code>:
 
 <pre>
-git clone git@github.com:winton/gem_template.git
-cd gem_template
-stencil
+#!/usr/bin/env ruby
+
+require 'rubygems'
+require 'with_pid'
+
+with_pid(
+  :action => ARGV[0], # start or stop
+  :command => "/data/my_app/current/script/runner 'Delayed::Worker.new.start'",
+  :name => "dj",
+  :pid => "/var/run/dj/dj.pid",
+  :tmp => "/data/my_app/current/tmp",
+  :user => "deploy"
+)
 </pre>
 
-Setup a new project
--------------------
+Be sure to run <code>chmod +x /data/my_app/current/bin/dj</code>.
 
-Do this for every new project.
+It is up to you to make sure that the command you execute runs in a continuous loop.
+
+Monit
+-----
 
 <pre>
-mkdir my_project
-git init
-stencil gem_template
-rake rename
+check process delayed_job
+  with pidfile /var/run/dj/dj.pid
+  start program = "/data/my_app/current/bin/dj start"
+  stop program = "/data/my_app/current/bin/dj stop"
+  group delayed_job
 </pre>
-
-The last command does a find-replace (gem\_template -> my\_project) on files and filenames.

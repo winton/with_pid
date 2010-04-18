@@ -1,0 +1,43 @@
+#!/bin/sh
+
+PATH=/bin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:$PATH
+CURDIR=`pwd`
+COMMAND="<%= options[:command] %>"
+PID_FILE="<%= options[:pid] %>"
+USER="<%= options[:user] %>"
+HOME="/home/$USER" ; export HOME
+
+mkdir -p <%= options[:pid_dir] %>
+
+case "<%= options[:action] %>" in
+  start)
+    echo "Starting <%= options[:name] %>"
+    if [ -f $PID_FILE ]; then
+      PID=`cat $PID_FILE`
+      if [ -d /proc/$PID ]; then
+        echo "Already running."
+        exit 1
+      fi
+      rm -f $PID_FILE
+    fi
+    echo $$ > $PID_FILE;
+<% if RUBY_PLATFORM.include?('darwin') %>
+    exec 2<&1 sudo -u$USER "$COMMAND"
+<% else %>
+    exec 2<&1 su -c"$COMMAND" $USER
+<% end %>
+    ;;
+  stop)
+    echo "Stopping <%= options[:name] %>"
+    if [ -f $PID_FILE ]; then
+      kill -15 `cat $PID_FILE` 2>/dev/null; true
+    fi
+
+    [ -e "$PIDFILE" ] && rm -f $PIDFILE
+    ;;
+  *)
+    usage
+    ;;
+      esac
+
+cd $CURDIR

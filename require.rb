@@ -9,18 +9,12 @@ Require do
   
   gemspec do
     author 'Winton Welsh'
-    dependencies do
-      gem :require
-    end
     email 'mail@wintoni.us'
-    name 'gem_template'
+    name 'with_pid'
     homepage "http://github.com/winton/#{name}"
-    summary ""
+    summary "The simple way to create and monitor a Ruby daemon"
     version '0.1.0'
   end
-  
-  bin { require 'lib/gem_template' }
-  lib { require 'lib/gem_template/gem_template' }
   
   rakefile do
     gem(:rake) { require 'rake/gempackagetask' }
@@ -30,7 +24,7 @@ Require do
   
   spec_helper do
     require 'require/spec_helper'
-    require 'lib/gem_template'
+    require 'lib/with_pid'
     require 'pp'
   end
 end
