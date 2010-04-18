@@ -2,6 +2,9 @@ require 'rubygems'
 require 'erb'
 
 def with_pid(options)
+  # Path to bash script
+  bash_path = options[:tmp] + "/" + options[:name]
+  
   # Add pid_dir option
   options[:pid_dir] = File.dirname(options[:pid])
   
@@ -10,7 +13,6 @@ def with_pid(options)
   template = File.expand_path(template)
   template = File.read(template)
   template = ERB.new(template).result(binding)
-  bash_path = options[:tmp] + "/" + options[:name]
   
   # Write bash script to tmp
   FileUtils.mkdir_p(options[:tmp])
