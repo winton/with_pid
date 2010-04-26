@@ -17,8 +17,7 @@ describe :with_pid do
       :command => "ps",
       :name => "test",
       :pid => @tmp + "/test.pid",
-      :tmp => @tmp,
-      :user => "winton"
+      :tmp => @tmp
     )
     output.include?('PID').should == true
     File.read(@tmp + "/test.pid").to_i.should > 0
