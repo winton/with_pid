@@ -5,6 +5,9 @@ CURDIR=`pwd`
 COMMAND="<%= options[:command] %>"
 PID_FILE="<%= options[:pid] %>"
 
+export RAILS_ENV=<%= options[:environment] %>
+export RACK_ENV=<%= options[:environment] %>
+
 mkdir -p <%= options[:pid_dir] %>
 
 case "<%= options[:action] %>" in
