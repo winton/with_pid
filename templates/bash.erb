@@ -22,7 +22,11 @@ case "<%= options[:action] %>" in
       rm -f $PID_FILE
     fi
     echo $$ > $PID_FILE;
-		exec 2<&1 $COMMAND
+<% if RUBY_PLATFORM.include?('darwin') %>
+		exec 2<&1 "$COMMAND"
+<% else %>
+		exec 2<&1 su -c"$COMMAND"
+<% end %>
     ;;
   stop)
     echo "Stopping <%= options[:name] %>"

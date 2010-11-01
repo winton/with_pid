@@ -13,7 +13,7 @@ Require do
     name 'with_pid'
     homepage "http://github.com/winton/#{name}"
     summary "The simple way to create and monitor a Ruby daemon"
-    version '0.1.3'
+    version '0.1.4'
   end
   
   rakefile do
