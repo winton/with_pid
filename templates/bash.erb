@@ -22,15 +22,24 @@ case "<%= options[:action] %>" in
       rm -f $PID_FILE
     fi
     echo $$ > $PID_FILE;
-<% if RUBY_PLATFORM.include?('darwin') %>
-		exec 2<&1 "$COMMAND"
-<% else %>
-		exec 2<&1 su -c"$COMMAND"
-<% end %>
+    eval "$COMMAND"
     ;;
   stop)
     echo "Stopping <%= options[:name] %>"
     if [ -f $PID_FILE ]; then
+      for child in $(ps axo pid,ppid  |  awk "{ if ( \$2 == `cat $PID_FILE` ) { print \$1 }}"); 
+      do 
+        kill -15 $child; 
+        SLEEP_COUNT=0
+        while [ -e /proc/$child ]; do
+          sleep .25 
+          let "SLEEP_COUNT+=1"
+          if(( "$SLEEP_COUNT" > 240 )); then
+            kill -9 $child 2>/dev/null; true
+            break 
+          fi
+        done 
+      done
       kill -15 `cat $PID_FILE` 2>/dev/null; true
     fi
     [ -e "$PID_FILE" ] && rm -f $PID_FILE
